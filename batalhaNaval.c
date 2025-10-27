@@ -10,6 +10,30 @@ int main() {
     // Sugestão: Posicione dois navios no tabuleiro, um verticalmente e outro horizontalmente.
     // Sugestão: Utilize `printf` para exibir as coordenadas de cada parte dos navios.
 
+    // Definições de constantes para o Nível Novato (Tab. 5x5)
+#define TAMANHO_TABULEIRO 5
+#define TAMANHO_NAVIO 3
+#define AGUA 0
+#define NAVIO 3
+
+// Função de Ajuda para exibir o tabuleiro
+void exibir_tabuleiro(int tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO]) {
+    printf("   ");
+    for (int c = 0; c < TAMANHO_TABULEIRO; c++) {
+        printf("%d ", c);
+    }
+    printf("\n");
+    
+    for (int i = 0; i < TAMANHO_TABULEIRO; i++) {
+        printf("%d |", i); 
+        for (int j = 0; j < TAMANHO_TABULEIRO; j++) {
+            printf("%d ", tabuleiro[i][j]); 
+        }
+        printf("|\n");
+    }
+}
+    
+
     // Nível Aventureiro - Expansão do Tabuleiro e Posicionamento Diagonal
     // Sugestão: Expanda o tabuleiro para uma matriz 10x10.
     // Sugestão: Posicione quatro navios no tabuleiro, incluindo dois na diagonal.
