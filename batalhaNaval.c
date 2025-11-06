@@ -1,17 +1,18 @@
 #include <stdio.h>
+#include <stdlib.h> // Incluído para a função abs() usada no Nível Mestre
 
 // Definições de constantes para o Nível Novato (Tab. 5x5)
 #define TAMANHO_TABULEIRO_NOVATO 5
 #define TAMANHO_NAVIO_NOVATO 3
 
-// --- NOVAS DEFINIÇÕES PARA O NÍVEL AVENTUREIRO ---
+// --- NOVAS DEFINIÇÕES PARA O NÍVEL AVENTUREIRO/MESTRE ---
 #define TAMANHO_TABULEIRO_AVENTUREIRO 10
 #define TAMANHO_NAVIO_AVENTUREIRO 3
 
 // Valores de representação
 #define AGUA 0
 #define NAVIO 3
-
+#define HABILIDADE_ESPECIAL 1 // Novo valor para marcar áreas de habilidade
 
 // Desafio Batalha Naval - MateCheck
 // Este código inicial serve como base para o desenvolvimento do sistema de Batalha Naval.
@@ -54,7 +55,7 @@ int main() {
     printf("\n[Navio 2: Vertical - Inicio: (X=%d, Y=%d)]\n", n2_col, n2_lin);
     for (int i = 0; i < TAMANHO_NAVIO_NOVATO; i++) {
         int linha_atual = n2_lin + i; // A linha (Y) avança
-        int coluna_atual = n2_col;    
+        int coluna_atual = n2_col; 
         
         tabuleiro_novato[linha_atual][coluna_atual] = NAVIO;
         
@@ -64,7 +65,7 @@ int main() {
     
     // Exibição do Tabuleiro Final
     printf("\n--- Visualização do Tabuleiro 5x5 ---\n");
-    printf("   0 1 2 3 4 (X)\n");
+    printf("   0 1 2 3 4 (X)\n");
     
     for (int i = 0; i < TAMANHO_TABULEIRO_NOVATO; i++) {
         printf("%d |", i); // Número da Linha (Y)
@@ -130,7 +131,7 @@ int main() {
 
     // Sugestão: Exiba o tabuleiro completo no console, mostrando 0 para posições vazias e 3 para posições ocupadas.
     printf("\n--- Visualização do Tabuleiro 10x10 (Aventureiro) ---\n");
-    printf("     0  1  2  3  4  5  6  7  8  9 (X)\n");
+    printf("     0  1  2  3  4  5  6  7  8  9 (X)\n");
     
     for (int i = 0; i < TAMANHO_TABULEIRO_AVENTUREIRO; i++) {
         printf("%2d |", i); // Número da Linha (Y)
@@ -143,10 +144,107 @@ int main() {
     printf("\n");
 
 
+    // --------------------------------------------------------------------------------
     // Nível Mestre - Habilidades Especiais com Matrizes
+    // --------------------------------------------------------------------------------
+    
+    printf("========================================================\n");
+    printf("--- NÍVEL MESTRE: Habilidades Especiais (10x10) ---\n");
+    printf("========================================================\n");
+
     // Sugestão: Crie matrizes para representar habilidades especiais como cone, cruz, e octaedro.
+    int tabuleiro_habilidades[TAMANHO_TABULEIRO_AVENTUREIRO][TAMANHO_TABULEIRO_AVENTUREIRO] = {0};
+    int tamanho_mestre = TAMANHO_TABULEIRO_AVENTUREIRO;
+    
+    // --- HABILIDADE 1: CRUZ (Centro: 5,5, Raio: 3) ---
+    int centro_cruz_x = 5;
+    int centro_cruz_y = 5;
+    int raio_cruz = 3;
+    
+    printf("\n[Habilidade 1: Cruz - Centro: (X=%d, Y=%d), Raio: %d]\n", centro_cruz_x, centro_cruz_y, raio_cruz);
+    
+    // 1. Marcar o ponto central
+    tabuleiro_habilidades[centro_cruz_y][centro_cruz_x] = HABILIDADE_ESPECIAL;
+
+    // 2. Marcar a linha vertical e horizontal (utilizando loops)
+    for (int i = 1; i <= raio_cruz; i++) {
+        // Vertical (Y)
+        if (centro_cruz_y - i >= 0) { // Para cima
+            tabuleiro_habilidades[centro_cruz_y - i][centro_cruz_x] = HABILIDADE_ESPECIAL;
+        }
+        if (centro_cruz_y + i < tamanho_mestre) { // Para baixo
+            tabuleiro_habilidades[centro_cruz_y + i][centro_cruz_x] = HABILIDADE_ESPECIAL;
+        }
+
+        // Horizontal (X)
+        if (centro_cruz_x - i >= 0) { // Para esquerda
+            tabuleiro_habilidades[centro_cruz_y][centro_cruz_x - i] = HABILIDADE_ESPECIAL;
+        }
+        if (centro_cruz_x + i < tamanho_mestre) { // Para direita
+            tabuleiro_habilidades[centro_cruz_y][centro_cruz_x + i] = HABILIDADE_ESPECIAL;
+        }
+    }
+
+
+    // --- HABILIDADE 2: CONE (Início: 0, 0, Profundidade: 4, Direção: Diagonal Principal) ---
+    int inicio_cone_x = 0;
+    int inicio_cone_y = 0;
+    int profundidade_cone = 4; 
+    
+    printf("\n[Habilidade 2: Cone - Início: (X=%d, Y=%d), Profundidade: %d (Diagonal Principal)]\n", inicio_cone_x, inicio_cone_y, profundidade_cone);
+    
     // Sugestão: Utilize estruturas de repetição aninhadas para preencher as áreas afetadas por essas habilidades no tabuleiro.
+    for (int i = 0; i < profundidade_cone; i++) {
+        int centro_y = inicio_cone_y + i;
+        int centro_x = inicio_cone_x + i;
+        
+        // A largura do cone aumenta (2*i + 1)
+        for (int k = -i; k <= i; k++) {
+            int y_atual = centro_y;
+            int x_atual = centro_x + k; 
+            
+            // Verifica limites
+            if (y_atual < tamanho_mestre && y_atual >= 0 && x_atual < tamanho_mestre && x_atual >= 0) {
+                 tabuleiro_habilidades[y_atual][x_atual] = HABILIDADE_ESPECIAL;
+            }
+        }
+    }
+
+
+    // --- HABILIDADE 3: OCTAEDRO (Aproximação 2D: Losango de Raio 3) ---
+    // O losango (diamante) é a projeção 2D de um octaedro, definida pela Distância de Manhattan.
+    int centro_octa_x = 7;
+    int centro_octa_y = 2;
+    int raio_octa = 3; 
+    
+    printf("\n[Habilidade 3: Octaedro (Losango) - Centro: (X=%d, Y=%d), Raio: %d]\n", centro_octa_x, centro_octa_y, raio_octa);
+
+    // Percorre todas as células
+    for (int i = 0; i < tamanho_mestre; i++) {
+        for (int j = 0; j < tamanho_mestre; j++) {
+            // Distância de Manhattan: |x - center_x| + |y - center_y| <= raio
+            int distancia_manhattan = abs(j - centro_octa_x) + abs(i - centro_octa_y);
+            
+            if (distancia_manhattan <= raio_octa) {
+                tabuleiro_habilidades[i][j] = HABILIDADE_ESPECIAL;
+            }
+        }
+    }
+
     // Sugestão: Exiba o tabuleiro com as áreas afetadas, utilizando 0 para áreas não afetadas e 1 para áreas atingidas.
+    printf("\n--- Visualização do Tabuleiro 10x10 (Mestre - Habilidades) ---\n");
+    printf("     0  1  2  3  4  5  6  7  8  9 (X)\n");
+    
+    for (int i = 0; i < TAMANHO_TABULEIRO_AVENTUREIRO; i++) {
+        printf("%2d |", i); // Número da Linha (Y)
+        for (int j = 0; j < TAMANHO_TABULEIRO_AVENTUREIRO; j++) {
+            printf("%2d ", tabuleiro_habilidades[i][j]); // Exibe 0 ou 1
+        }
+        printf("|\n");
+    }
+    printf("Legenda: %d = Água | %d = Habilidade Afetada\n", AGUA, HABILIDADE_ESPECIAL);
+    printf("\n");
+
 
     return 0;
 }
