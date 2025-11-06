@@ -226,6 +226,8 @@ int main() {
             int distancia_manhattan = abs(j - centro_octa_x) + abs(i - centro_octa_y);
             
             if (distancia_manhattan <= raio_octa) {
+                // Se a célula já foi marcada por outra habilidade (Habilidade 1 ou 2), 
+                // mantemos a marcação, pois o valor 1 é constante.
                 tabuleiro_habilidades[i][j] = HABILIDADE_ESPECIAL;
             }
         }
